@@ -11,7 +11,6 @@ from nltk.stem import WordNetLemmatizer, PorterStemmer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from collections import Counter
-
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -21,7 +20,7 @@ import re
 
 
 # Let's read our CSV file and rename column text to News_Headline
-bbc_text = pd.read_csv('/content/drive/MyDrive/bbc-text.csv')
+bbc_text = pd.read_csv('/home/prajaktaw/mysite/bbc-text.csv')
 bbc_text = bbc_text.rename(columns={'text': 'News_Headline'}, inplace=False)
 bbc_text.head(5)
 
