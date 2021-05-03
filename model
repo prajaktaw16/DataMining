@@ -1,9 +1,5 @@
-import numpy as np  # linear algebra
+# Commented out IPython magic to ensure Python compatibility.
 import pandas as pd
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
@@ -13,7 +9,6 @@ from sklearn.naive_bayes import MultinomialNB
 import nltk
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 from nltk.tokenize import word_tokenize
-from wordcloud import WordCloud, STOPWORDS
 from nltk.corpus import stopwords
 from collections import Counter
 
@@ -21,134 +16,14 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 import re
-# Visualization Libraries
-import matplotlib.pyplot as plt
-import seaborn as sns
-from PIL import Image
-from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 
-sns.set()
-# %matplotlib inline
-from sklearn.pipeline import Pipeline
-from sklearn.svm import SVC
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
-import warnings
 
-warnings.filterwarnings("ignore")
-import sklearn
+
 
 # Let's read our CSV file and rename column text to News_Headline
-bbc_text = pd.read_csv('/home/prajaktaw/mysite/bbc-text.csv')
+bbc_text = pd.read_csv('/content/drive/MyDrive/bbc-text.csv')
 bbc_text = bbc_text.rename(columns={'text': 'News_Headline'}, inplace=False)
 bbc_text.head(5)
-
-# Display all the categories
-bbc_text.category.unique()
-
-# Categorize total number of headlines and plot
-print('NUMBER OF SAMPLES IN EACH CATEGORY: \n')
-sns.countplot(bbc_text.category, palette="Set1")
-
-
-# Let's check range of the words in the dataset
-def word_count(text):
-    text.str.split(). \
-        map(lambda x: len(x)). \
-        hist()
-
-
-word_count(bbc_text['News_Headline'])
-
-
-# Let's find out all the stop words like a,the,or etc and plot them
-def plot_stopwords(data):
-    stop = set(stopwords.words('english'))
-    data_split = data.str.split()
-    data_list = data_split.values.tolist()
-    corpus = [word for i in data_list for word in i]
-    from collections import defaultdict
-    dictionary_stopwords = defaultdict(int)
-    for word in corpus:
-        if word in stop:
-            dictionary_stopwords[word] += 1
-
-    top = sorted(dictionary_stopwords.items(), key=lambda x: x[1], reverse=True)[:10]
-    x, y = zip(*top)
-    plt.bar(x, y)
-
-
-plot_stopwords(bbc_text['News_Headline'])
-
-
-# count of the most frequently occurring words
-def top_frequent_words(data):
-    stop = set(stopwords.words('english'))
-    data_split = data.str.split()
-    data_list = data_split.values.tolist()
-    corpus = [word for i in data_list for word in i]
-    counter = Counter(corpus)
-    mostCommon = counter.most_common()
-    x, y = [], []
-    for word, count in mostCommon[:100]:
-        if (word not in stop):
-            x.append(word)
-            y.append(count)
-    sns.barplot(x=y, y=x)
-
-
-top_frequent_words(bbc_text['News_Headline'])
-
-
-def plot_wordcloud(data):
-    stop = set(stopwords.words('english'))
-
-    def _preprocess_text(data):
-        corpus = []
-        stem = PorterStemmer()
-        lem = WordNetLemmatizer()
-        for news in data:
-            words = [w for w in word_tokenize(news) if (w not in stop)]
-
-            words = [lem.lemmatize(w) for w in words if len(w) > 2]
-
-            corpus.append(words)
-        return corpus
-
-    corpus = _preprocess_text(data)
-
-    wordcloud = WordCloud(
-        background_color='white',
-        stopwords=set(STOPWORDS),
-        max_words=200,
-        max_font_size=25,
-        scale=3,
-        random_state=1)
-
-    wordcloud = wordcloud.generate(str(corpus))
-
-    fig = plt.figure(1, figsize=(12, 12))
-    plt.axis('off')
-
-    plt.imshow(wordcloud)
-    plt.show()
-
-
-plot_wordcloud(bbc_text['News_Headline'])
-
-# Plot all headlines for positive negtaive and neutral semantics
-from textblob import TextBlob
-
-
-def polarity_histo(data):
-    def check_semantics(data):
-        return TextBlob(data).sentiment.polarity
-
-    polarity_val = data.apply(lambda a: check_semantics(a))
-    polarity_val.hist()
-
-
-polarity_histo(bbc_text['News_Headline'])
 
 
 # DATA CLEANING
@@ -157,12 +32,8 @@ def cleaning(bbc_text):
     if len(bbc_text) == 1:
         word_tokens = word_tokenize(bbc_text)
     else:
-        print('Wait! Data is getting cleaned...')
         # Tokenize : dividing Sentences into words
         bbc_text['text_clean'] = bbc_text['News_Headline'].apply(nltk.word_tokenize)
-        print('Step 1-Tokenization Done!.')
-        print(bbc_text.head(5))
-
     # Remove stop words
     if len(bbc_text) == 1:
         stop_words = set(stopwords.words('english'))
@@ -174,31 +45,18 @@ def cleaning(bbc_text):
     else:
         stop_words = set(nltk.corpus.stopwords.words("english"))
         bbc_text['text_clean'] = bbc_text['text_clean'].apply(lambda x: [item for item in x if item not in stop_words])
-        print('Step 2-All stop words are removed from the list.')
-        print(bbc_text.head(5))
     # Will keep words and remove numbers and special characters
     if len(bbc_text) != 1:
         regex = '[a-z]+'
         bbc_text['text_clean'] = bbc_text['text_clean'].apply(lambda x: [char for char in x if re.match(regex, char)])
-        print('Step3-Numbers and Special Characters are removed.')
-        print(bbc_text.head(5))
 
 
-cleaning(bbc_text)
-
-print(len(bbc_text))
-
-
-def detokenize(bbc_text):
-    for i in range(len(bbc_text)):
-        bbc_text_w = bbc_text['text_clean'][i]
+def detokenize(data):
+    for i in range(len(data)):
+        bbc_text_w = data['text_clean'][i]
         a = TreebankWordDetokenizer().detokenize(bbc_text_w)
         bbc_text.at[i, 'text_clean'] = a
 
-
-detokenize(bbc_text)
-
-print(bbc_text['text_clean'])
 
 # Let's assigne numerical values to the unique categories
 bbc_text.category = bbc_text.category.map({'tech': 0, 'business': 1, 'sport': 2, 'entertainment': 3, 'politics': 4})
@@ -208,6 +66,8 @@ bbc_text.category.unique()
 bbc_text.isnull().sum()
 
 # Let's split data into train and test
+cleaning(bbc_text)
+detokenize(bbc_text)
 X = bbc_text.text_clean
 y = bbc_text.category
 # split data
@@ -223,8 +83,6 @@ X_transformed = vector.transform(X_train)
 X_transformed.toarray()
 # for test data
 X_test_transformed = vector.transform(X_test)
-print(X_test_transformed.toarray)
-
 logistic_reg = LogisticRegression()
 logistic_reg.fit(X_transformed, y_train)
 
@@ -241,24 +99,16 @@ y_pred_probability = logistic_reg.predict_proba(X_test_transformed)
 metrics.accuracy_score(y_test, y_predicted)
 
 confusion_mat = metrics.confusion_matrix(y_test, y_predicted)
-print(confusion_mat)
 TrueNeg = confusion_mat[0, 0]
 TruePos = confusion_mat[1, 1]
 FalseNeg = confusion_mat[1, 0]
 FalsePos = confusion_mat[0, 1]
 sensitivity = TruePos / float(FalseNeg + TruePos)
-print("sensitivity", sensitivity)
-
 specificity = TrueNeg / float(TrueNeg + FalsePos)
-print("specificity", specificity)
 
 PRECISION_SCORE = metrics.precision_score(y_test, y_predicted, average='micro')
 RECALL_SCORE = metrics.recall_score(y_test, y_predicted, average='micro')
 F1_SCORE = metrics.f1_score(y_test, y_predicted, average='micro')
-
-print("PRECISION SCORE :", PRECISION_SCORE)
-print("RECALL SCORE :", RECALL_SCORE)
-print("F1 SCORE :", F1_SCORE)
 
 naivebayes = MultinomialNB()
 naivebayes.fit(X_transformed, y_train)
@@ -278,58 +128,28 @@ metrics.confusion_matrix(y_test, y_predict)
 # help(metrics.confusion_matrix)
 
 confusion = metrics.confusion_matrix(y_test, y_predict)
-print(confusion)
+
 TrueNeg = confusion_mat[0, 0]
 TruePos = confusion_mat[1, 1]
 FalseNeg = confusion_mat[1, 0]
 FalsePos = confusion_mat[0, 1]
 sensitivity = TruePos / float(FalseNeg + TruePos)
-print("sensitivity", sensitivity)
 
 specificity = TrueNeg / float(TrueNeg + FalsePos)
-print("specificity", specificity)
 
 PRECISION_SCORE = metrics.precision_score(y_test, y_predicted, average='micro')
 RECALL_SCORE = metrics.recall_score(y_test, y_predicted, average='micro')
 F1_SCORE = metrics.f1_score(y_test, y_predicted, average='micro')
 
-print("PRECISION SCORE :", PRECISION_SCORE)
-print("RECALL SCORE :", RECALL_SCORE)
-print("F1 SCORE :", F1_SCORE)
 
-headline1 = ['Morgan Wallen is a Billboard Music Awards finalist, but he wont be a part of the show']
-vec1 = vector.transform(headline1).toarray()
-print('Headline:', headline1)
-print(
-    str(list(naivebayes.predict(vec1))[0]).replace('0', 'TECH').replace('1', 'BUSINESS').replace('2', 'SPORTS').replace(
-        '3', 'ENTERTAINMENT').replace('4', 'POLITICS'))
-
-relabel = {'0': 'tech', '1': 'business', '2': 'sport', '3': 'entertainment', '4': 'politics'}
-
-headline2 = ['Intel to invest $600 million to expand chip, Mobileye R&D in Israel']
-vec2 = vector.transform(headline2).toarray()
-print('Headline:', headline2)
-print(
-    str(list(naivebayes.predict(vec2))[0]).replace('0', 'TECH').replace('1', 'BUSINESS').replace('2', 'SPORTS').replace(
-        '3', 'ENTERTAINMENT').replace('4', 'POLITICS'))
-
-headline3 = ['Tim Scott optimistic about Congress progress on police reform']
-vec3 = vector.transform(headline3).toarray()
-print('Headline:', headline3)
-print(
-    str(list(naivebayes.predict(vec3))[0]).replace('0', 'TECH').replace('1', 'BUSINESS').replace('2', 'SPORTS').replace(
-        '3', 'ENTERTAINMENT').replace('4', 'POLITICS'))
-
-headline4 = ['Bogdanovic scores 34 as Jazz rally to beat Raptors 106-102']
-vec4 = vector.transform(headline4).toarray()
-print('Headline:', headline4)
-print(
-    str(list(naivebayes.predict(vec4))[0]).replace('0', 'TECH').replace('1', 'BUSINESS').replace('2', 'SPORTS').replace(
-        '3', 'ENTERTAINMENT').replace('4', 'POLITICS'))
 def predict_class(headline):
-  vec4 = vector.transform(headline4).toarray()
-  classify=(str(list(naivebayes.predict(vec4))[0]).replace('0', 'TECH').replace('1', 'BUSINESS').replace('2', 'SPORTS').replace('3','ENTERTAINMENT').replace('4','POLITICS'))
-  return classify
+    vec4 = vector.transform(headline).toarray()
+    classify = (str(list(naivebayes.predict(vec4))[0]).replace('0', 'TECH').replace('1', 'BUSINESS').replace('2',
+                                                                                                             'SPORTS').replace(
+        '3', 'ENTERTAINMENT').replace('4', 'POLITICS'))
+    return classify
 
-if __name__ == '__main__':
-    print(predict_class(data))
+
+headline = ['Bogdanovic scores 34 as Jazz rally to beat Raptors 106-102']
+ans = predict_class(headline)
+print(ans)
