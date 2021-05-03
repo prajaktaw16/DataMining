@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>BBC NEWS CLASSIFICATION</title>
+        <title>BBC News Classification</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,36 +9,38 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse">
+        <nav class="navbar navbar-inverse" style="background-color:slategrey;">
             <div class="container">
-                <div class="navbar-header">
+                <div class="navbar navbar-light bg-light">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Book recommendation System</a>
+                    <a class="navbar-brand" style="color:white;" href="#">BBC News Classification</a>
                 </div>
             </div>
         </nav>
         </div>
-        {% for comment in comments %}
-
-            <div class="row">
-                <li>{{ comment }}</li>
-            </div>
-        {% endfor %}
-
+        
 
         <div class="container">
 
 
         <div class="row">
             <form action="." method="POST">
-                <textarea  class="form-control" name="contents" placeholder="Enter a news headline"></textarea>
-                <input class="btn btn-success" type="submit" value="Send">
+                <textarea  style="height:50%;" class="form-control" name="contents" placeholder="Enter a news headline"></textarea><br>
+                <input style="background-color:slategrey;" class="btn btn-success" type="submit" value="Find Category">
             </form>
+            
+        {% for comment in comments %}
+
+            <div class="row">
+                <label>News Category:</label>
+                <li>{{ comment }}</li>
+            </div>
+        {% endfor %}
 
 
     </div><!-- /.container -->

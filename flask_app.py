@@ -1,6 +1,7 @@
 from flask import Flask, redirect, render_template, request, url_for
 import model
 
+
 app = Flask(__name__)
 comments = list()
 app.config["DEBUG"] = True
