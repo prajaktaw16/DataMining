@@ -20,10 +20,12 @@ Deployment Steps:
 Create account in Python Anywhere. In Files tab:
 Upload flask python and model files.
 Upload the bbc-news CSV dataset
+
 Click on :http://prajaktaw.pythonanywhere.com/
-Enter any of the following headlines:
+Enter any of the following headlines
 
 Latest headlines 
+
 https://www.espn.com/nfl/draft2021/story/_/id/31339636/2021-nfl-draft-live-analysis-every-selection
 Collins, who won both the Bronko Nagurski Award as the nation's top defensive player and 
 the Bednarik Award as the defensive player of year, isn't the issue here. It's the decision to take him. Collins 
